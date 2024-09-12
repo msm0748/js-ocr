@@ -5,11 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>웹캠 전/후면 카메라 전환</title>
     <link rel="stylesheet" href="style.css" />
-    <script src="index.js" defer></script>
+    <script src="index.js" defer type="module"></script>
   </head>
   <body>
     <div class="wrap">
       <video id="webcam" autoplay playsinline></video>
+      <div class="guide-line-wrap">
+        <div id="guideLine" class="guide-line"></div>
+      </div>
       <div class="btn-container">
         <ul>
           <li>
@@ -31,5 +34,6 @@
         </ul>
       </div>
     </div>
+    <canvas id="canvas" style="display: none"></canvas>
   </body>
 </html>

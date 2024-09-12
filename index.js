@@ -1,6 +1,13 @@
+import { cropImage } from './cropImage.mjs';
+
 const video = document.getElementById('webcam');
 const switchButton = document.getElementById('switchCamera');
 const torchButton = document.getElementById('torch');
+const captureButton = document.getElementById('capture');
+const canvas = document.getElementById('canvas');
+const capturedImage = document.getElementById('capturedImage');
+const guideLine = document.getElementById('guideLine');
+let originalImageSrc;
 
 const videoConstraints = {
   width: 1920,
@@ -16,6 +23,7 @@ const viewSize = {
   height: window.innerHeight,
 };
 
+// 카메라 설정 함수
 async function setupCamera() {
   try {
     const devices = await navigator.mediaDevices.enumerateDevices();
@@ -31,8 +39,8 @@ async function setupCamera() {
       video: {
         deviceId: camera.deviceId,
         facingMode: currentFacingMode,
-        height: { ideal: 1080 },
-        width: { ideal: 1920 },
+        width: { ideal: videoConstraints.width },
+        height: { ideal: videoConstraints.height },
       },
     });
 
@@ -52,13 +60,7 @@ async function setupCamera() {
   }
 }
 
-async function toggleTorch() {
-  if (!track) return;
-
-  torch = !torch;
-  await updateTorchState();
-}
-
+// 플래시 상태 업데이트 함수
 async function updateTorchState() {
   try {
     await track.applyConstraints({
@@ -72,20 +74,61 @@ async function updateTorchState() {
   }
 }
 
-switchButton.addEventListener('click', async () => {
+// 이미지 캡처 함수
+async function captureImage() {
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+
+  canvas.getContext('2d').drawImage(video, 0, 0);
+  const imageSrc = canvas.toDataURL('image/png');
+
+  return imageSrc;
+}
+
+// 카메라 모드 전환 함수
+function toggleCameraMode() {
+  currentFacingMode = currentFacingMode === 'user' ? 'environment' : 'user';
+}
+
+// 카메라 트랙 중지 함수
+function stopCurrentTrack() {
   if (track) {
     track.stop();
   }
+}
 
-  // 카메라 모드 전환
-  currentFacingMode = currentFacingMode === 'user' ? 'environment' : 'user';
+// 버튼 클릭 시 실행되는 함수
+async function handleSwitchButtonClick() {
+  stopCurrentTrack(); // 현재 트랙 중지
+  toggleCameraMode(); // 카메라 모드 전환
+  await setupCamera(); // 새로운 스트림으로 카메라 설정
+}
 
-  // 새 스트림으로 카메라 설정
-  await setupCamera();
-});
+// 캡처 버튼 클릭 시 실행되는 함수
+async function handleCaptureButtonClick() {
+  const imageSrc = await captureImage();
+  originalImageSrc = imageSrc;
+  capturedImage.src = imageSrc;
+  const cropImageSrc = await cropImage(
+    imageSrc,
+    guideLine.getBoundingClientRect(),
+    viewSize
+  );
+}
 
-torchButton.addEventListener('click', toggleTorch);
+// 플래시 버튼 클릭 시 실행되는 함수
+async function handleTorchButtonClick() {
+  if (!track) return;
 
+  torch = !torch;
+  await updateTorchState();
+}
+
+switchButton.addEventListener('click', handleSwitchButtonClick);
+captureButton.addEventListener('click', handleCaptureButtonClick);
+torchButton.addEventListener('click', handleTorchButtonClick);
+
+// 즉시 실행 함수
 (async function () {
   await setupCamera();
 })();
