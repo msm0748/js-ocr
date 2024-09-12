@@ -9,13 +9,16 @@
     <script>
       const userAgent = navigator.userAgent;
 
+      const mobileSrc = './views/mobile';
+      const desktopSrc = './views/desktop';
+
       // 모바일 기기 체크
       if (/android/i.test(userAgent)) {
-        window.location.href = './mobile';
+        window.location.href = mobileSrc;
       } else if (/iPhone|iPad|iPod/i.test(userAgent)) {
-        window.location.href = './mobile';
+        window.location.href = mobileSrc;
       } else {
-        window.location.href = './desktop';
+        window.location.href = desktopSrc;
       }
     </script>
   </body>

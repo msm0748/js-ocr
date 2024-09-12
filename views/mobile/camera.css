@@ -87,9 +87,13 @@ video {
 }
 
 .btn-container .torch {
-  background-image: url('./icons/torch-off.svg');
+  background-image: url('../../icons/torch-off.svg');
 }
 
 .btn-container .torch.off {
-  background-image: url('./icons/torch.svg');
+  background-image: url('../../icons/torch.svg');
+}
+
+.btn-container .switch-camera {
+  background-image: url('../../icons/camera.svg');
 }

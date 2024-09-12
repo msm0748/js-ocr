@@ -2,8 +2,12 @@
 <html lang="ko">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>웹캠 전/후면 카메라 전환</title>
+    <!-- 모바일 화면에서 확대/축소를 막기 위한 코드 -->
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>나이스 OCR</title>
     <link rel="stylesheet" href="camera.css" />
     <link rel="stylesheet" href="modal.css" />
     <script src="index.js" defer type="module"></script>
@@ -20,7 +24,7 @@
             <button id="torch" class="torch" aria-label="플래시"></button>
           </li>
           <li>
-            <button id="capture" class="capture">
+            <button id="capture" class="capture" aria-label="캡처">
               <span></span>
             </button>
           </li>
@@ -28,7 +32,6 @@
             <button
               id="switchCamera"
               class="switch-camera"
-              style="background-image: url('./icons/camera.svg')"
               aria-label="전/후면 카메라 전환"
             ></button>
           </li>

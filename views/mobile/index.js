@@ -1,12 +1,11 @@
-import { cropImage } from '../lib/cropImage.mjs';
+import { cropImage } from '../../lib/cropImage.mjs';
 import { toggleModal } from './modalRender.mjs';
 
 const video = document.getElementById('webcam');
 const switchButton = document.getElementById('switchCamera');
 const torchButton = document.getElementById('torch');
 const captureButton = document.getElementById('capture');
-const canvas = document.getElementById('canvas');
-const capturedImage = document.getElementById('capturedImage');
+const canvas = document.getElementById('canvas'); // 캡처한 이미지를 그릴 캔버스
 const guideLine = document.getElementById('guideLine'); // 가이드 라인
 let originalImageSrc; // 캡처한 이미지의 원본 소스
 
@@ -79,6 +78,8 @@ async function updateTorchState() {
 async function captureImage() {
   canvas.width = video.videoWidth;
   canvas.height = video.videoHeight;
+
+  console.log(video.videoWidth, video.videoHeight);
 
   canvas.getContext('2d').drawImage(video, 0, 0);
   const imageSrc = canvas.toDataURL('image/png');
