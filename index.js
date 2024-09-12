@@ -6,11 +6,18 @@ const videoConstraints = {
   height: 1080,
 };
 
+const viewSize = {
+  width: window.innerWidth,
+  height: window.innerHeight,
+};
+
 async function setupCamera() {
   try {
     const stream = await navigator.mediaDevices.getUserMedia({
       video: { facingMode: currentFacingMode, ...videoConstraints },
     });
+    video.style.width = viewSize.width + 'px';
+    video.style.height = viewSize.height + 'px';
     video.srcObject = stream;
   } catch (error) {
     console.error('카메라 접근 오류:', error);
