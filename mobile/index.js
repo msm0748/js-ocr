@@ -1,4 +1,4 @@
-import { cropImage } from './cropImage.mjs';
+import { cropImage } from '../lib/cropImage.mjs';
 import { toggleModal } from './modalRender.mjs';
 
 const video = document.getElementById('webcam');
