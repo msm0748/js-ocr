@@ -6,7 +6,6 @@ const switchButton = document.getElementById('switchCamera');
 const torchButton = document.getElementById('torch');
 const captureButton = document.getElementById('capture');
 const canvas = document.getElementById('canvas'); // 캡처한 이미지를 그릴 캔버스
-const guideLine = document.getElementById('guideLine'); // 가이드 라인
 let originalImageSrc; // 캡처한 이미지의 원본 소스
 let videoResolution; // 비디오 해상도
 
@@ -25,6 +24,7 @@ async function setupCamera() {
     const devices = await navigator.mediaDevices.enumerateDevices();
     const cameras = devices.filter((device) => device.kind === 'videoinput');
 
+    console.log(cameras, 'cameras');
     if (cameras.length === 0) {
       throw '이 기기에서 카메라를 찾을 수 없습니다.';
     }
@@ -34,7 +34,7 @@ async function setupCamera() {
     const stream = await navigator.mediaDevices.getUserMedia({
       video: {
         deviceId: camera.deviceId,
-        facingMode: currentFacingMode,
+        facingMode: { exact: currentFacingMode },
         // ideal 속성은 최적의 해상도를 요청하는 것이지, 반드시 그 해상도로 설정되는 것은 아님
         width: { ideal: 1920 },
         height: { ideal: 1080 },
@@ -80,6 +80,8 @@ async function captureImage() {
   canvas.width = video.videoWidth;
   canvas.height = video.videoHeight;
 
+  console.log(video.src);
+
   canvas.getContext('2d').drawImage(video, 0, 0);
   const imageSrc = canvas.toDataURL('image/png');
 
@@ -108,7 +110,10 @@ async function handleSwitchButtonClick() {
 // 캡처 버튼 클릭 시 실행되는 함수
 async function handleCaptureButtonClick() {
   const imageSrc = await captureImage();
+  // console.log(imageSrc);
   originalImageSrc = imageSrc;
+  const guideLine = document.getElementById('guideLine'); // 가이드 라인
+
   const cropImageSrc = await cropImage(
     imageSrc,
     guideLine.getBoundingClientRect(),
