@@ -131,7 +131,6 @@ switchButton.addEventListener('click', handleSwitchButtonClick);
 captureButton.addEventListener('click', handleCaptureButtonClick);
 torchButton.addEventListener('click', handleTorchButtonClick);
 
-// 즉시 실행 함수
-(async function () {
+window.addEventListener('load', async () => {
   await setupCamera();
-})();
+});
