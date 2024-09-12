@@ -8,11 +8,7 @@ const captureButton = document.getElementById('capture');
 const canvas = document.getElementById('canvas'); // 캡처한 이미지를 그릴 캔버스
 const guideLine = document.getElementById('guideLine'); // 가이드 라인
 let originalImageSrc; // 캡처한 이미지의 원본 소스
-
-const videoConstraints = {
-  width: 1920,
-  height: 1080,
-};
+let videoResolution; // 비디오 해상도
 
 let track = null;
 let currentFacingMode = 'environment';
@@ -39,8 +35,9 @@ async function setupCamera() {
       video: {
         deviceId: camera.deviceId,
         facingMode: currentFacingMode,
-        width: { ideal: videoConstraints.width },
-        height: { ideal: videoConstraints.height },
+        // ideal 속성은 최적의 해상도를 요청하는 것이지, 반드시 그 해상도로 설정되는 것은 아님
+        width: { ideal: 1920 },
+        height: { ideal: 1080 },
       },
     });
 
@@ -55,6 +52,10 @@ async function setupCamera() {
       torchButton.style.visibility = 'hidden';
     }
     video.srcObject = stream;
+    videoResolution = {
+      width: track.getSettings().width,
+      height: track.getSettings().height,
+    };
   } catch (error) {
     console.error('카메라 설정 중 오류 발생:', error);
   }
@@ -78,8 +79,6 @@ async function updateTorchState() {
 async function captureImage() {
   canvas.width = video.videoWidth;
   canvas.height = video.videoHeight;
-
-  console.log(video.videoWidth, video.videoHeight);
 
   canvas.getContext('2d').drawImage(video, 0, 0);
   const imageSrc = canvas.toDataURL('image/png');
@@ -110,10 +109,10 @@ async function handleSwitchButtonClick() {
 async function handleCaptureButtonClick() {
   const imageSrc = await captureImage();
   originalImageSrc = imageSrc;
-  // capturedImage.src = imageSrc;
   const cropImageSrc = await cropImage(
     imageSrc,
     guideLine.getBoundingClientRect(),
+    videoResolution,
     viewSize
   );
 
