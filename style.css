@@ -23,10 +23,16 @@ video {
   object-fit: cover;
 }
 
-button {
+.btn-container {
   position: absolute;
-  top: 50%;
+  bottom: 100px;
   left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+}
+.btn-container button {
   padding: 10px 20px;
   font-size: 16px;
   background-color: #4caf50;
@@ -35,7 +41,4 @@ button {
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s;
-}
-button:hover {
-  background-color: #45a049;
 }

@@ -5,6 +5,7 @@ const videoConstraints = {
   width: 1920,
   height: 1080,
 };
+let torch = false;
 
 const viewSize = {
   width: window.innerWidth,
@@ -12,17 +13,36 @@ const viewSize = {
 };
 
 async function setupCamera() {
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: currentFacingMode, ...videoConstraints },
-    });
-    video.style.width = viewSize.width + 'px';
-    video.style.height = viewSize.height + 'px';
-    video.srcObject = stream;
-  } catch (error) {
-    console.error('카메라 접근 오류:', error);
-    alert('카메라 접근에 실패했습니다. 카메라 권한을 확인해주세요.');
-  }
+  navigator.mediaDevices.enumerateDevices().then((devices) => {
+    const cameras = devices.filter((device) => device.kind === 'videoinput');
+
+    if (cameras.length === 0) {
+      throw 'No camera found on this device.';
+    }
+    const camera = cameras[cameras.length - 1];
+
+    // Create stream and get video track
+    navigator.mediaDevices
+      .getUserMedia({
+        video: {
+          deviceId: camera.deviceId,
+          facingMode: currentFacingMode,
+          height: { ideal: 1080 },
+          width: { ideal: 1920 },
+        },
+      })
+      .then((stream) => {
+        const track = stream.getVideoTracks()[0];
+        const btn = document.querySelector('#torch');
+        btn.addEventListener('click', function () {
+          torch = !torch;
+          track.applyConstraints({
+            advanced: [{ torch }],
+          });
+        });
+        video.srcObject = stream;
+      });
+  });
 }
 
 switchButton.addEventListener('click', async () => {
