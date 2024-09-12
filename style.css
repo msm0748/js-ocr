@@ -3,6 +3,7 @@
   padding: 0;
   box-sizing: border-box;
   border-width: 0;
+  background-color: transparent;
 }
 
 body {
@@ -23,7 +24,7 @@ video {
   object-fit: cover;
 }
 
-.btn-container {
+.btn-container ul {
   position: absolute;
   bottom: 100px;
   left: 50%;
@@ -32,13 +33,42 @@ video {
   display: flex;
   justify-content: space-around;
 }
+
+.btn-container li {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .btn-container button {
-  padding: 10px 20px;
-  font-size: 16px;
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s;
+}
+
+.btn-container button:not(.capture) {
+  background-repeat: no-repeat;
+  color: white;
+  height: 40px;
+  width: 40px;
+}
+
+.btn-container .capture {
+  padding: 4px;
+  border-radius: 50%;
+  border: 3px solid #fff;
+}
+
+.btn-container .capture span {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #fff;
+  display: block;
+}
+
+.btn-container .torch {
+  background-image: url('./icons/torch-off.svg');
+}
+
+.btn-container .torch.off {
+  background-image: url('./icons/torch.svg');
 }

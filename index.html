@@ -11,12 +11,24 @@
     <div class="wrap">
       <video id="webcam" autoplay playsinline></video>
       <div class="btn-container">
-        <div>
-          <button id="torch" class="torch">플래시</button>
-        </div>
-        <div>
-          <button id="switchCamera" class="switchCamera">카메라 전환</button>
-        </div>
+        <ul>
+          <li>
+            <button id="torch" class="torch" aria-label="플래시"></button>
+          </li>
+          <li>
+            <button id="capture" class="capture">
+              <span></span>
+            </button>
+          </li>
+          <li>
+            <button
+              id="switchCamera"
+              class="switch-camera"
+              style="background-image: url('./icons/camera.svg')"
+              aria-label="전/후면 카메라 전환"
+            ></button>
+          </li>
+        </ul>
       </div>
     </div>
   </body>

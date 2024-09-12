@@ -41,10 +41,10 @@ async function setupCamera() {
     const isTorch = capabilities.torch;
 
     if (isTorch) {
-      torchButton.style.display = 'block';
+      torchButton.style.visibility = 'visible';
       updateTorchState();
     } else {
-      torchButton.style.display = 'none';
+      torchButton.style.visibility = 'hidden';
     }
     video.srcObject = stream;
   } catch (error) {
@@ -64,11 +64,11 @@ async function updateTorchState() {
     await track.applyConstraints({
       advanced: [{ torch }],
     });
-    torchButton.textContent = torch ? '플래시 끄기' : '플래시 켜기';
+    torchButton.classList.toggle('off', torch === false);
   } catch (error) {
     console.error('플래시 제어 중 오류 발생:', error);
     torch = false;
-    torchButton.textContent = '플래시 켜기';
+    torchButton.classList.toggle('off', torch === false);
   }
 }
 
