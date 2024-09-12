@@ -1,4 +1,5 @@
 import { cropImage } from './cropImage.mjs';
+import { toggleModal } from './modalRender.mjs';
 
 const video = document.getElementById('webcam');
 const switchButton = document.getElementById('switchCamera');
@@ -6,8 +7,8 @@ const torchButton = document.getElementById('torch');
 const captureButton = document.getElementById('capture');
 const canvas = document.getElementById('canvas');
 const capturedImage = document.getElementById('capturedImage');
-const guideLine = document.getElementById('guideLine');
-let originalImageSrc;
+const guideLine = document.getElementById('guideLine'); // 가이드 라인
+let originalImageSrc; // 캡처한 이미지의 원본 소스
 
 const videoConstraints = {
   width: 1920,
@@ -16,7 +17,7 @@ const videoConstraints = {
 
 let track = null;
 let currentFacingMode = 'environment';
-let torch = false;
+let torch = false; // 플래시 상태
 
 const viewSize = {
   width: window.innerWidth,
@@ -108,12 +109,14 @@ async function handleSwitchButtonClick() {
 async function handleCaptureButtonClick() {
   const imageSrc = await captureImage();
   originalImageSrc = imageSrc;
-  capturedImage.src = imageSrc;
+  // capturedImage.src = imageSrc;
   const cropImageSrc = await cropImage(
     imageSrc,
     guideLine.getBoundingClientRect(),
     viewSize
   );
+
+  toggleModal(cropImageSrc);
 }
 
 // 플래시 버튼 클릭 시 실행되는 함수

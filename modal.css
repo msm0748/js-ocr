@@ -1,0 +1,54 @@
+.modal {
+  position: fixed;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
+  padding: 20px;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: end;
+  align-items: center;
+}
+
+.modal-header button {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  border: 1px solid black;
+  padding: 8px;
+  border-radius: 24px;
+  cursor: pointer;
+}
+
+.modal-header button span {
+  display: block;
+  width: 24px;
+  height: 24px;
+  background-image: url('./icons/reload.svg');
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.modal-content {
+  margin-top: 30px;
+}
+
+.modal-content .img {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.modal-content .img img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.modal-content .data {
+  margin-top: 30px;
+}
