@@ -1,10 +1,14 @@
 const video = document.getElementById('webcam');
 const switchButton = document.getElementById('switchCamera');
-let currentFacingMode = 'environment';
+const torchButton = document.getElementById('torch');
+
 const videoConstraints = {
   width: 1920,
   height: 1080,
 };
+
+let track = null;
+let currentFacingMode = 'environment';
 let torch = false;
 
 const viewSize = {
@@ -13,43 +17,65 @@ const viewSize = {
 };
 
 async function setupCamera() {
-  navigator.mediaDevices.enumerateDevices().then((devices) => {
+  try {
+    const devices = await navigator.mediaDevices.enumerateDevices();
     const cameras = devices.filter((device) => device.kind === 'videoinput');
 
     if (cameras.length === 0) {
-      throw 'No camera found on this device.';
+      throw '이 기기에서 카메라를 찾을 수 없습니다.';
     }
     const camera = cameras[cameras.length - 1];
 
-    // Create stream and get video track
-    navigator.mediaDevices
-      .getUserMedia({
-        video: {
-          deviceId: camera.deviceId,
-          facingMode: currentFacingMode,
-          height: { ideal: 1080 },
-          width: { ideal: 1920 },
-        },
-      })
-      .then((stream) => {
-        const track = stream.getVideoTracks()[0];
-        const btn = document.querySelector('#torch');
-        btn.addEventListener('click', function () {
-          torch = !torch;
-          track.applyConstraints({
-            advanced: [{ torch }],
-          });
-        });
-        video.srcObject = stream;
-      });
-  });
+    // 스트림 생성 및 비디오 트랙 가져오기
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: {
+        deviceId: camera.deviceId,
+        facingMode: currentFacingMode,
+        height: { ideal: 1080 },
+        width: { ideal: 1920 },
+      },
+    });
+
+    track = stream.getVideoTracks()[0];
+    const capabilities = track.getCapabilities();
+    const isTorch = capabilities.torch;
+
+    if (isTorch) {
+      torchButton.style.display = 'block';
+      updateTorchState();
+    } else {
+      torchButton.style.display = 'none';
+    }
+    video.srcObject = stream;
+  } catch (error) {
+    console.error('카메라 설정 중 오류 발생:', error);
+  }
+}
+
+async function toggleTorch() {
+  if (!track) return;
+
+  torch = !torch;
+  await updateTorchState();
+}
+
+async function updateTorchState() {
+  try {
+    await track.applyConstraints({
+      advanced: [{ torch }],
+    });
+    torchButton.textContent = torch ? '플래시 끄기' : '플래시 켜기';
+  } catch (error) {
+    console.error('플래시 제어 중 오류 발생:', error);
+    torch = false;
+    torchButton.textContent = '플래시 켜기';
+  }
 }
 
 switchButton.addEventListener('click', async () => {
-  // 현재 스트림 중지
-  const currentStream = video.srcObject;
-  const tracks = currentStream.getTracks();
-  tracks.forEach((track) => track.stop());
+  if (track) {
+    track.stop();
+  }
 
   // 카메라 모드 전환
   currentFacingMode = currentFacingMode === 'user' ? 'environment' : 'user';
@@ -58,5 +84,8 @@ switchButton.addEventListener('click', async () => {
   await setupCamera();
 });
 
-// 초기 카메라 설정
-setupCamera();
+torchButton.addEventListener('click', toggleTorch);
+
+(async function () {
+  await setupCamera();
+})();
