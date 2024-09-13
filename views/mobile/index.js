@@ -24,10 +24,10 @@ async function setupCamera() {
     const devices = await navigator.mediaDevices.enumerateDevices();
     const cameras = devices.filter((device) => device.kind === 'videoinput');
 
-    console.log(cameras, 'cameras');
     if (cameras.length === 0) {
       throw '이 기기에서 카메라를 찾을 수 없습니다.';
     }
+
     const camera = cameras[cameras.length - 1];
 
     // 스트림 생성 및 비디오 트랙 가져오기
@@ -43,8 +43,10 @@ async function setupCamera() {
 
     track = stream.getVideoTracks()[0];
     const capabilities = track.getCapabilities();
+
     const isTorch = capabilities.torch;
 
+    // 해당 카메라가 플래시를 지원하는지 확인
     if (isTorch) {
       torchButton.style.visibility = 'visible';
       updateTorchState();
@@ -79,8 +81,6 @@ async function updateTorchState() {
 async function captureImage() {
   canvas.width = video.videoWidth;
   canvas.height = video.videoHeight;
-
-  console.log(video.src);
 
   canvas.getContext('2d').drawImage(video, 0, 0);
   const imageSrc = canvas.toDataURL('image/png');

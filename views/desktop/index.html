@@ -1,11 +1,42 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>나이스 OCR</title>
+    <title>이미지 크롭 및 리사이즈</title>
+    <script src="imageCrop.js" defer></script>
+    <style>
+      #image-container {
+        position: relative;
+        display: inline-block;
+      }
+      #crop-area {
+        position: absolute;
+        border: 2px solid #fff;
+        box-shadow: 0 0 0 9999em rgba(0, 0, 0, 0.5);
+        cursor: move;
+      }
+      .resize-handle {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background-color: #fff;
+        border: 1px solid #000;
+      }
+      #preview-canvas {
+        margin-top: 20px;
+      }
+    </style>
   </head>
   <body>
-    <div>데스크톱</div>
+    <div id="image-container">
+      <img
+        id="source-image"
+        src="https://fengyuanchen.github.io/cropperjs/images/picture.jpg"
+        alt="Source Image"
+      />
+      <div id="crop-area" style="display: none"></div>
+    </div>
+    <canvas id="preview-canvas"></canvas>
   </body>
 </html>
